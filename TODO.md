@@ -9,10 +9,10 @@ Each task represents a step toward realizing the architecture in `ARCHITECTURE.d
 - [x] Provide scripts or instructions to install required libraries on Raspberry Pi 3B+.
 
 ## RF input module
-- [ ] Implement RTL-SDR interface using `librtlsdr` to tune frequency, set sample rate, and stream IQ data.
-- [ ] Add band preset table and command API for frequency changes.
-- [ ] Apply digital down‑conversion and decimation to produce a ~12 kHz complex baseband stream.
-- [ ] Maintain a ring buffer of IQ samples aligned to 15‑second time slots using NTP-synchronized system clock.
+- [x] Implement RTL-SDR interface using `librtlsdr` to tune frequency, set sample rate, and stream IQ data.
+- [x] Add band preset table and command API for frequency changes.
+- [x] Apply digital down‑conversion and decimation to produce a ~12 kHz complex baseband stream.
+- [x] Maintain a ring buffer of IQ samples aligned to 15‑second time slots using NTP-synchronized system clock.
 
 ## DSP and decoding engine
 - [ ] Implement synchronization and signal detection using FFT-based search for FT8/JS8 Costas patterns.
