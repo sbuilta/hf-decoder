@@ -31,6 +31,11 @@ public:
   void stop();
 
   const std::vector<BandPreset> &presets() const { return presets_; }
+  const std::vector<std::complex<float>> &ring_buffer() const {
+    return ring_buffer_;
+  }
+  size_t ring_pos() const { return ring_pos_; }
+
 
 private:
   static void rtlsdr_callback(unsigned char *buf, uint32_t len, void *ctx);
@@ -43,6 +48,9 @@ private:
   std::vector<std::complex<float>> ring_buffer_;
   size_t ring_pos_{};
   std::mutex buffer_mutex_;
+
+  static constexpr uint32_t kBasebandRate = 12000; // 12 kHz
+  static constexpr uint32_t kDecimation = 20;      // 240 kHz / 20 = 12 kHz
 
   std::vector<BandPreset> presets_;
 };
