@@ -4,9 +4,9 @@ This document outlines the initial implementation plan for the HF FT8/JS8 decode
 Each task represents a step toward realizing the architecture in `ARCHITECTURE.docx`.
 
 ## Project setup
-- [ ] Initialize C++ project structure with CMake and `src/`, `include/`, and `docs/` directories.
-- [ ] Document build dependencies (librtlsdr, FFTW3, Liquid-DSP, SQLite, CivetWeb or similar HTTP server).
-- [ ] Provide scripts or instructions to install required libraries on Raspberry Pi 3B+.
+- [x] Initialize C++ project structure with CMake and `src/`, `include/`, and `docs/` directories.
+- [x] Document build dependencies (librtlsdr, FFTW3, Liquid-DSP, SQLite, CivetWeb or similar HTTP server).
+- [x] Provide scripts or instructions to install required libraries on Raspberry Pi 3B+.
 
 ## RF input module
 - [ ] Implement RTL-SDR interface using `librtlsdr` to tune frequency, set sample rate, and stream IQ data.
