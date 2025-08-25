@@ -1,0 +1,42 @@
+# TODO
+
+This document outlines the initial implementation plan for the HF FT8/JS8 decoder system.
+Each task represents a step toward realizing the architecture in `ARCHITECTURE.docx`.
+
+## Project setup
+- [ ] Initialize C++ project structure with CMake and `src/`, `include/`, and `docs/` directories.
+- [ ] Document build dependencies (librtlsdr, FFTW3, Liquid-DSP, SQLite, CivetWeb or similar HTTP server).
+- [ ] Provide scripts or instructions to install required libraries on Raspberry Pi 3B+.
+
+## RF input module
+- [ ] Implement RTL-SDR interface using `librtlsdr` to tune frequency, set sample rate, and stream IQ data.
+- [ ] Add band preset table and command API for frequency changes.
+- [ ] Apply digital down‑conversion and decimation to produce a ~12 kHz complex baseband stream.
+- [ ] Maintain a ring buffer of IQ samples aligned to 15‑second time slots using NTP-synchronized system clock.
+
+## DSP and decoding engine
+- [ ] Implement synchronization and signal detection using FFT-based search for FT8/JS8 Costas patterns.
+- [ ] Demodulate 8‑FSK symbols and refine frequency/time offsets for each candidate signal.
+- [ ] Integrate LDPC(174,91) decoder and CRC check; consider existing GPL-compatible libraries (e.g., `ft8_lib`).
+- [ ] Decode FT8 message types and JS8 free‑text payloads into human‑readable strings.
+- [ ] Compute SNR per message using signal/noise power measurements referenced to 2.5 kHz bandwidth.
+- [ ] Structure decoder to handle multiple concurrent signals and optional JS8 decoding.
+
+## Data storage
+- [ ] Define SQLite schema (timestamp, band, frequency, mode, SNR, message text, etc.).
+- [ ] Implement database module to insert batches of decoded messages and query recent entries.
+
+## Networking and UI
+- [ ] Embed lightweight HTTP server to serve static dashboard and JSON/SSE endpoints.
+- [ ] Provide API routes to change band and toggle modes; update SDR module accordingly.
+- [ ] Implement front‑end page showing recent messages, current band/mode, and decoding status indicator.
+
+## Concurrency and infrastructure
+- [ ] Use threads or async tasks: SDR capture, decode engine, database logger, and web server.
+- [ ] Implement thread-safe queues or message passing between modules.
+- [ ] Add logging and configuration facilities.
+
+## Testing and calibration
+- [ ] Create unit tests for DSP components and message parsing using recorded FT8/JS8 samples.
+- [ ] Verify real-time performance on Raspberry Pi and refine algorithm parameters.
+
