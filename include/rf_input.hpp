@@ -36,6 +36,7 @@ public:
   }
   size_t ring_pos() const { return ring_pos_; }
 
+
 private:
   static void rtlsdr_callback(unsigned char *buf, uint32_t len, void *ctx);
   void handle_samples(unsigned char *buf, uint32_t len);
