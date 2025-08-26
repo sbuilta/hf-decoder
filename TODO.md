@@ -15,12 +15,12 @@ Each task represents a step toward realizing the architecture in `ARCHITECTURE.d
 - [x] Maintain a ring buffer of IQ samples aligned to 15‑second time slots using NTP-synchronized system clock.
 
 ## DSP and decoding engine
-- [ ] Implement synchronization and signal detection using FFT-based search for FT8/JS8 Costas patterns.
-- [ ] Demodulate 8‑FSK symbols and refine frequency/time offsets for each candidate signal.
-- [ ] Integrate LDPC(174,91) decoder and CRC check; consider existing GPL-compatible libraries (e.g., `ft8_lib`).
-- [ ] Decode FT8 message types and JS8 free‑text payloads into human‑readable strings.
-- [ ] Compute SNR per message using signal/noise power measurements referenced to 2.5 kHz bandwidth.
-- [ ] Structure decoder to handle multiple concurrent signals and optional JS8 decoding.
+- [x] Implement synchronization and signal detection using FFT-based search for FT8/JS8 Costas patterns.
+- [x] Demodulate 8‑FSK symbols and refine frequency/time offsets for each candidate signal.
+- [x] Integrate LDPC(174,91) decoder and CRC check; consider existing GPL-compatible libraries (e.g., `ft8_lib`).
+- [x] Decode FT8 message types and JS8 free‑text payloads into human‑readable strings.
+- [x] Compute SNR per message using signal/noise power measurements referenced to 2.5 kHz bandwidth.
+- [x] Structure decoder to handle multiple concurrent signals and optional JS8 decoding.
 
 ## Data storage
 - [ ] Define SQLite schema (timestamp, band, frequency, mode, SNR, message text, etc.).
