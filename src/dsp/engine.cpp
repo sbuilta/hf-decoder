@@ -20,6 +20,7 @@ DecodeEngine::process(const std::vector<std::complex<float>> &frame) const {
       res.time_sec = sig.time_sec;
       res.snr_db = sig.snr_db;
       auto msg = decoder_.decode(sig.tones, js8_enabled_);
+      res.mode = msg.mode;
       res.crc_ok = msg.crc_ok;
       res.ldpc_errors = msg.ldpc_errors;
       res.text = msg.text;

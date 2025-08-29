@@ -12,6 +12,7 @@ struct DecodedSignal {
   float freq_hz;
   float time_sec;
   float snr_db;
+  Mode mode;
   bool crc_ok;
   int ldpc_errors;
   std::string text;
