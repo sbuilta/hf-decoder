@@ -126,6 +126,7 @@ DecodedMessage LDPCDecoder::decode(const std::vector<int> &tones,
 
   DecodedMessage msg{};
   msg.ldpc_errors = errors;
+  msg.mode = Mode::FT8;
   if (errors > 0) {
     msg.crc_ok = false;
     return msg;
@@ -143,6 +144,8 @@ DecodedMessage LDPCDecoder::decode(const std::vector<int> &tones,
     msg.text = decode_ft8_payload(msg.payload);
     if (allow_js8 && msg.text.empty()) {
       msg.text = decode_js8_payload(msg.payload);
+      if (!msg.text.empty())
+        msg.mode = Mode::JS8;
     }
   }
   return msg;

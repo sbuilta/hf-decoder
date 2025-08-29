@@ -23,8 +23,8 @@ Each task represents a step toward realizing the architecture in `ARCHITECTURE.d
 - [x] Structure decoder to handle multiple concurrent signals and optional JS8 decoding.
 
 ## Data storage
-- [ ] Define SQLite schema (timestamp, band, frequency, mode, SNR, message text, etc.).
-- [ ] Implement database module to insert batches of decoded messages and query recent entries.
+- [x] Define SQLite schema (timestamp, band, frequency, mode, SNR, message text, etc.).
+- [x] Implement database module to insert batches of decoded messages and query recent entries.
 
 ## Networking and UI
 - [ ] Embed lightweight HTTP server to serve static dashboard and JSON/SSE endpoints.
