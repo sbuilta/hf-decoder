@@ -41,6 +41,10 @@ public:
   }
   size_t ring_pos() const { return ring_pos_; }
 
+  // Return a copy of the current 15 s ring buffer starting at the
+  // most recent sample. Thread-safe snapshot for external consumers.
+  std::vector<std::complex<float>> snapshot() const;
+
 
 private:
   static void rtlsdr_callback(unsigned char *buf, uint32_t len, void *ctx);
@@ -52,7 +56,7 @@ private:
 
   std::vector<std::complex<float>> ring_buffer_;
   size_t ring_pos_{};
-  std::mutex buffer_mutex_;
+  mutable std::mutex buffer_mutex_;
 
   static constexpr uint32_t kBasebandRate = 12000; // 12 kHz
   static constexpr uint32_t kDecimation = 20;      // 240 kHz / 20 = 12 kHz

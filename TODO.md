@@ -32,9 +32,9 @@ Each task represents a step toward realizing the architecture in `ARCHITECTURE.d
 - [x] Implement front‑end page showing recent messages, current band/mode, and decoding status indicator.
 
 ## Concurrency and infrastructure
-- [ ] Use threads or async tasks: SDR capture, decode engine, database logger, and web server.
-- [ ] Implement thread-safe queues or message passing between modules.
-- [ ] Add logging and configuration facilities.
+- [x] Use threads or async tasks: SDR capture, decode engine, database logger, and web server.
+- [x] Implement thread-safe queues or message passing between modules.
+- [x] Add logging and configuration facilities.
 
 ## Testing and calibration
 - [ ] Create unit tests for DSP components and message parsing using recorded FT8/JS8 samples.
