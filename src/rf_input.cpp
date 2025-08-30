@@ -117,4 +117,14 @@ void RfInput::handle_samples(unsigned char *buf, uint32_t len) {
   ring_pos_ = pos;
 }
 
+std::vector<std::complex<float>> RfInput::snapshot() const {
+  std::lock_guard<std::mutex> lock(buffer_mutex_);
+  std::vector<std::complex<float>> out(ring_buffer_.size());
+  size_t pos = ring_pos_;
+  for (size_t i = 0; i < ring_buffer_.size(); ++i) {
+    out[i] = ring_buffer_[(pos + i) % ring_buffer_.size()];
+  }
+  return out;
+}
+
 } // namespace hf
