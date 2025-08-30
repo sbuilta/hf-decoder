@@ -1,6 +1,7 @@
 #include "rf_input.hpp"
 #include "dsp/engine.hpp"
 #include "data_store.hpp"
+#include "web_server.hpp"
 #include <ctime>
 #include <iostream>
 
@@ -36,6 +37,7 @@ int main() {
 
   hf::DataStore db("decodes.db");
   if (db.open() && db.init()) {
+    hf::WebServer web(db, rf, engine, "docs/web");
     std::vector<hf::DbRecord> recs;
     recs.reserve(results.size());
     for (const auto &r : results) {

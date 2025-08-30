@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>HF Decoder Dashboard</title>
+  <style>
+    body { font-family: sans-serif; }
+    table { border-collapse: collapse; width: 100%; }
+    th, td { border: 1px solid #ccc; padding: 4px; text-align: left; }
+    #status { margin-left: 1em; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <h1>HF Decoder Dashboard</h1>
+  <div>
+    Band: <select id="band"></select>
+    <label><input type="checkbox" id="js8"> JS8</label>
+    <span id="status">Idle</span>
+  </div>
+  <table id="messages">
+    <thead>
+      <tr><th>Time</th><th>Band</th><th>Mode</th><th>SNR</th><th>Text</th></tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+  <script>
+    async function loadMessages() {
+      const resp = await fetch('/api/messages');
+      const msgs = await resp.json();
+      const tbody = document.querySelector('#messages tbody');
+      tbody.innerHTML = msgs.map(m =>
+        `<tr><td>${new Date(m.timestamp*1000).toLocaleTimeString()}</td>` +
+        `<td>${m.band}</td><td>${m.mode}</td>` +
+        `<td>${m.snr_db.toFixed(1)}</td><td>${m.text}</td></tr>`
+      ).join('');
+    }
+    async function loadControls() {
+      const bandResp = await fetch('/api/band');
+      const bandData = await bandResp.json();
+      const sel = document.getElementById('band');
+      sel.innerHTML = bandData.presets.map((p,i) =>
+        `<option value="${i}" ${i===bandData.current?'selected':''}>${p.name}</option>`).join('');
+      sel.onchange = () => fetch(`/api/band?index=${sel.value}`, {method:'POST'});
+      const modeResp = await fetch('/api/mode');
+      const modeData = await modeResp.json();
+      const js8 = document.getElementById('js8');
+      js8.checked = modeData.js8;
+      js8.onchange = () => fetch(`/api/mode?js8=${js8.checked?1:0}`, {method:'POST'});
+    }
+    function setupEvents() {
+      const status = document.getElementById('status');
+      const evt = new EventSource('/events');
+      evt.onmessage = () => {
+        status.textContent = 'Decoding...';
+        loadMessages();
+        setTimeout(() => status.textContent = 'Idle', 3000);
+      };
+      evt.onerror = () => { status.textContent = 'Disconnected'; };
+    }
+    loadMessages();
+    loadControls();
+    setupEvents();
+  </script>
+</body>
+</html>

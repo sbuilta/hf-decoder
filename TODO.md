@@ -27,9 +27,9 @@ Each task represents a step toward realizing the architecture in `ARCHITECTURE.d
 - [x] Implement database module to insert batches of decoded messages and query recent entries.
 
 ## Networking and UI
-- [ ] Embed lightweight HTTP server to serve static dashboard and JSON/SSE endpoints.
-- [ ] Provide API routes to change band and toggle modes; update SDR module accordingly.
-- [ ] Implement front‑end page showing recent messages, current band/mode, and decoding status indicator.
+- [x] Embed lightweight HTTP server to serve static dashboard and JSON/SSE endpoints.
+- [x] Provide API routes to change band and toggle modes; update SDR module accordingly.
+- [x] Implement front‑end page showing recent messages, current band/mode, and decoding status indicator.
 
 ## Concurrency and infrastructure
 - [ ] Use threads or async tasks: SDR capture, decode engine, database logger, and web server.

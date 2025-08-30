@@ -27,6 +27,11 @@ public:
   bool set_frequency(uint32_t freq_hz);
   bool set_sample_rate(uint32_t rate_hz);
 
+  // Set active band preset by index. Returns false on invalid index or
+  // failure to retune the SDR.
+  bool set_band(size_t index);
+  size_t current_band() const { return current_preset_; }
+
   bool start();
   void stop();
 
@@ -53,6 +58,7 @@ private:
   static constexpr uint32_t kDecimation = 20;      // 240 kHz / 20 = 12 kHz
 
   std::vector<BandPreset> presets_;
+  size_t current_preset_{};
 };
 
 } // namespace hf

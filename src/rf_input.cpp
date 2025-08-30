@@ -28,7 +28,7 @@ bool RfInput::open(int device_index) {
   }
   // Default configuration (240 kHz input, decimated to 12 kHz)
   set_sample_rate(kBasebandRate * kDecimation);
-  set_frequency(presets_.front().center_freq_hz);
+  set_band(0);
   return true;
 }
 
@@ -49,6 +49,13 @@ bool RfInput::set_sample_rate(uint32_t rate_hz) {
   if (!dev_)
     return false;
   return rtlsdr_set_sample_rate(dev_, rate_hz) == 0;
+}
+
+bool RfInput::set_band(size_t index) {
+  if (index >= presets_.size())
+    return false;
+  current_preset_ = index;
+  return set_frequency(presets_[index].center_freq_hz);
 }
 
 bool RfInput::start() {
