@@ -17,6 +17,15 @@
     <label><input type="checkbox" id="js8"> JS8</label>
     <span id="status">Idle</span>
   </div>
+  <div id="debug">
+    Last capture: <span id="lastCapture">-</span>
+    Last decode: <span id="lastDecode">-</span>
+    Messages: <span id="lastCount">0</span>
+  </div>
+  <div>
+    <audio id="audio" controls></audio>
+    <button id="refreshAudio">Refresh Audio</button>
+  </div>
   <table id="messages">
     <thead>
       <tr><th>Time</th><th>Band</th><th>Mode</th><th>SNR</th><th>Text</th></tr>
@@ -31,7 +40,7 @@
       tbody.innerHTML = msgs.map(m =>
         `<tr><td>${new Date(m.timestamp*1000).toLocaleTimeString()}</td>` +
         `<td>${m.band}</td><td>${m.mode}</td>` +
-        `<td>${m.snr_db.toFixed(1)}</td><td>${m.text}</td></tr>`
+        `<td>${m.snr.toFixed(1)}</td><td>${m.text}</td></tr>`
       ).join('');
     }
     async function loadControls() {
@@ -47,18 +56,34 @@
       js8.checked = modeData.js8;
       js8.onchange = () => fetch(`/api/mode?js8=${js8.checked?1:0}`, {method:'POST'});
     }
+    async function loadStatus() {
+      const resp = await fetch('/api/status');
+      const s = await resp.json();
+      document.getElementById('lastCapture').textContent =
+        s.last_capture ? new Date(s.last_capture*1000).toLocaleTimeString() : '-';
+      document.getElementById('lastDecode').textContent =
+        s.last_decode ? new Date(s.last_decode*1000).toLocaleTimeString() : '-';
+      document.getElementById('lastCount').textContent = s.last_count;
+    }
     function setupEvents() {
       const status = document.getElementById('status');
       const evt = new EventSource('/events');
       evt.onmessage = () => {
         status.textContent = 'Decoding...';
         loadMessages();
-        setTimeout(() => status.textContent = 'Idle', 3000);
+        loadStatus();
+        setTimeout(() => status.textContent = 'Idle', 15000);
       };
       evt.onerror = () => { status.textContent = 'Disconnected'; };
     }
+    document.getElementById('refreshAudio').onclick = () => {
+      const a = document.getElementById('audio');
+      a.src = '/api/audio?ts=' + Date.now();
+      a.play();
+    };
     loadMessages();
     loadControls();
+    loadStatus();
     setupEvents();
   </script>
 </body>
