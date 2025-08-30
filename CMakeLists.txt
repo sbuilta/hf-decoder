@@ -32,8 +32,12 @@ if(BUILD_MAIN)
   )
 
   target_include_directories(hfdecoder PRIVATE include ${RTLSDR_INCLUDE_DIRS} ${FFTW3_INCLUDE_DIRS} ${SQLITE3_INCLUDE_DIRS} ${CIVETWEBCPP_INCLUDE_DIRS} ${CIVETWEB_INCLUDE_DIRS})
-  target_link_libraries(hfdecoder PRIVATE ${RTLSDR_LIBRARIES} ${FFTW3_LIBRARIES} ${SQLITE3_LIBRARIES} ${CIVETWEBCPP_LIBRARIES} ${CIVETWEB_LIBRARIES})
-  target_link_libraries(hfdecoder PRIVATE Threads::Threads)
+  target_link_libraries(hfdecoder
+      PRIVATE
+          ${RTLSDR_LIBRARIES} ${FFTW3_LIBRARIES} ${SQLITE3_LIBRARIES}
+          civetweb-cpp civetweb
+          Threads::Threads
+  )
 endif()
 
 enable_testing()
