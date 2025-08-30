@@ -38,5 +38,14 @@ Each task represents a step toward realizing the architecture in `ARCHITECTURE.d
 
 ## Testing and calibration
 - [x] Create unit tests for DSP components and message parsing using recorded FT8/JS8 samples.
-- [ ] Verify real-time performance on Raspberry Pi and refine algorithm parameters.
+- [ ] (MANUAL ONLY) Verify real-time performance on Raspberry Pi and refine algorithm parameters.
 
+## Debugging
+- [ ] Determine cause of "malloc(): unaligned tcache chunk detected" fault that is crashing program
+- [ ] Determine cause of bad decode data. E.g. from trial run: Time	Band	Mode	SNR	Text
+                                                               1:57:55 PM	unknown	FT8	0.0	
+
+## Future Expansion
+- [ ] (Web Interface) Show currently tuned frequency (feedback from RTL-SDR V4) on the web 
+- [ ] (Web Interface) Add tick box control for Bias Tee control
+- [ ] (README) Add section describing control of 
