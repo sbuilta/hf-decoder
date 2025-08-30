@@ -37,6 +37,6 @@ Each task represents a step toward realizing the architecture in `ARCHITECTURE.d
 - [x] Add logging and configuration facilities.
 
 ## Testing and calibration
-- [ ] Create unit tests for DSP components and message parsing using recorded FT8/JS8 samples.
+- [x] Create unit tests for DSP components and message parsing using recorded FT8/JS8 samples.
 - [ ] Verify real-time performance on Raspberry Pi and refine algorithm parameters.
 

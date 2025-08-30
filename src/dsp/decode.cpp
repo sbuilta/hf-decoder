@@ -73,7 +73,7 @@ std::string unpack_grid(uint32_t n) {
   return std::string(g);
 }
 
-std::string decode_ft8_payload(const std::array<uint8_t,10>& payload) {
+std::string decode_ft8_payload_impl(const std::array<uint8_t,10>& payload) {
   uint32_t n1 = get_bits(payload, 0, 28);
   uint32_t n2 = get_bits(payload, 28, 28);
   uint32_t n3 = get_bits(payload, 56, 15);
@@ -90,7 +90,7 @@ std::string decode_ft8_payload(const std::array<uint8_t,10>& payload) {
   return msg;
 }
 
-std::string decode_js8_payload(const std::array<uint8_t,10>& payload) {
+std::string decode_js8_payload_impl(const std::array<uint8_t,10>& payload) {
   std::string out;
   for (int i = 0; i < 11; ++i) {
     uint32_t v = get_bits(payload, i * 7, 7);
@@ -103,6 +103,14 @@ std::string decode_js8_payload(const std::array<uint8_t,10>& payload) {
 }
 
 } // namespace
+
+std::string decode_ft8_payload(const std::array<uint8_t,10>& payload) {
+  return decode_ft8_payload_impl(payload);
+}
+
+std::string decode_js8_payload(const std::array<uint8_t,10>& payload) {
+  return decode_js8_payload_impl(payload);
+}
 
 DecodedMessage LDPCDecoder::decode(const std::vector<int> &tones,
                                    bool allow_js8) const {
@@ -141,9 +149,9 @@ DecodedMessage LDPCDecoder::decode(const std::vector<int> &tones,
   msg.crc_ok = (extracted == calc);
   std::copy(a91, a91 + 10, msg.payload.begin());
   if (msg.crc_ok) {
-    msg.text = decode_ft8_payload(msg.payload);
+    msg.text = decode_ft8_payload_impl(msg.payload);
     if (allow_js8 && msg.text.empty()) {
-      msg.text = decode_js8_payload(msg.payload);
+      msg.text = decode_js8_payload_impl(msg.payload);
       if (!msg.text.empty())
         msg.mode = Mode::JS8;
     }
