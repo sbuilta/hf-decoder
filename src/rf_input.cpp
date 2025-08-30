@@ -21,15 +21,23 @@ RfInput::~RfInput() {
 }
 
 bool RfInput::open(int device_index) {
-  if (rtlsdr_open(&dev_, device_index) != 0) {
-    std::cerr << "Failed to open RTL-SDR device\n";
+  constexpr int kMaxTries = 5;
+  for (int i = 0; i < kMaxTries; ++i) {
+    int index = device_index + i;
+    int r = rtlsdr_open(&dev_, index);
+    if (r == 0) {
+      // Default configuration (240 kHz input, decimated to 12 kHz)
+      set_sample_rate(kBasebandRate * kDecimation);
+      set_band(0);
+      return true;
+    }
+    std::cerr << "Failed to open RTL-SDR device at index " << index
+              << " (error " << r << ")\n";
     dev_ = nullptr;
-    return false;
   }
-  // Default configuration (240 kHz input, decimated to 12 kHz)
-  set_sample_rate(kBasebandRate * kDecimation);
-  set_band(0);
-  return true;
+  std::cerr << "Failed to open RTL-SDR device after trying " << kMaxTries
+            << " slots\n";
+  return false;
 }
 
 void RfInput::close() {
@@ -103,9 +111,9 @@ void RfInput::handle_samples(unsigned char *buf, uint32_t len) {
 
   // Determine ring buffer position based on NTP-synchronised system clock.
   auto now = std::chrono::system_clock::now();
-  auto ms =
-      std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch())
-          .count();
+  auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(
+                now.time_since_epoch())
+                .count();
   size_t pos = ((ms % 15000) * kBasebandRate) / 1000;
   pos = (pos + ring_buffer_.size() - down.size()) % ring_buffer_.size();
 

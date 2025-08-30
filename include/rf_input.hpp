@@ -21,6 +21,8 @@ public:
   RfInput();
   ~RfInput();
 
+  // Try to open an RTL-SDR starting from the given device index. If the
+  // device is busy, subsequent indices up to five total attempts are tried.
   bool open(int device_index = 0);
   void close();
 
@@ -44,7 +46,6 @@ public:
   // Return a copy of the current 15 s ring buffer starting at the
   // most recent sample. Thread-safe snapshot for external consumers.
   std::vector<std::complex<float>> snapshot() const;
-
 
 private:
   static void rtlsdr_callback(unsigned char *buf, uint32_t len, void *ctx);
