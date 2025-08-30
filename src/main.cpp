@@ -7,10 +7,19 @@
 #include "logging.hpp"
 #include <atomic>
 #include <chrono>
+#include <csignal>
 #include <ctime>
 #include <iostream>
 #include <thread>
 #include <vector>
+
+namespace {
+std::atomic<bool> *g_running = nullptr;
+void handle_sigint(int) {
+  if (g_running)
+    g_running->store(false);
+}
+}
 
 int main() {
   auto cfg = hf::Config::load("hfdecoder.conf");
@@ -32,8 +41,15 @@ int main() {
   }
 
   std::atomic<bool> running{true};
+  g_running = &running;
+  std::atomic<std::time_t> last_capture{0};
+  std::atomic<std::time_t> last_decode{0};
+  std::atomic<size_t> last_decode_count{0};
   hf::ThreadSafeQueue<std::vector<std::complex<float>>> decode_queue;
   hf::ThreadSafeQueue<std::vector<hf::DbRecord>> log_queue;
+
+  // Handle SIGINT for graceful shutdown.
+  std::signal(SIGINT, handle_sigint);
 
   // Logger thread writes decoded records to the database.
   std::thread logger([&]() {
@@ -45,7 +61,8 @@ int main() {
 
   // Web server runs in its own thread using CivetWeb's internal loop.
   std::thread server_thread([&]() {
-    hf::WebServer server(db, rf, engine, "docs/web", cfg.web_port);
+    hf::WebServer server(db, rf, engine, last_capture, last_decode,
+                         last_decode_count, "docs/web", cfg.web_port);
     while (running) {
       std::this_thread::sleep_for(std::chrono::seconds(1));
     }
@@ -62,6 +79,8 @@ int main() {
   std::thread capture([&]() {
     while (running) {
       auto frame = rf.snapshot();
+      last_capture = std::time(nullptr);
+      hf::log::debug("Captured frame");
       decode_queue.push(std::move(frame));
       std::this_thread::sleep_for(std::chrono::seconds(15));
     }
@@ -72,9 +91,13 @@ int main() {
     std::vector<std::complex<float>> frame;
     while (decode_queue.pop(frame)) {
       auto results = engine.process(frame);
+      last_decode = std::time(nullptr);
+      last_decode_count = results.size();
+      hf::log::debug("Decoder produced " +
+                     std::to_string(results.size()) + " messages");
       std::vector<hf::DbRecord> recs;
       recs.reserve(results.size());
-      auto now = std::time(nullptr);
+      auto now = last_decode.load();
       for (const auto &r : results) {
         hf::DbRecord rec{};
         rec.timestamp = now;
@@ -91,9 +114,10 @@ int main() {
     }
   });
 
-  // Run for one decode cycle in this demo.
-  std::this_thread::sleep_for(std::chrono::seconds(15));
-  running = false;
+  // Keep running until interrupted.
+  while (running) {
+    std::this_thread::sleep_for(std::chrono::seconds(1));
+  }
 
   capture.join();
   decode_queue.stop();
