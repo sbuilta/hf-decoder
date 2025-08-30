@@ -25,6 +25,7 @@ public:
   std::vector<DecodedSignal>
   process(const std::vector<std::complex<float>> &frame) const;
   void set_js8_enabled(bool en) { js8_enabled_ = en; }
+  bool js8_enabled() const { return js8_enabled_; }
 
 private:
   bool js8_enabled_;
