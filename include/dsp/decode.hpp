@@ -22,5 +22,9 @@ public:
                         bool allow_js8 = true) const;
 };
 
+// Expose payload decoding helpers for unit tests
+std::string decode_ft8_payload(const std::array<uint8_t,10>& payload);
+std::string decode_js8_payload(const std::array<uint8_t,10>& payload);
+
 } // namespace hf
 
